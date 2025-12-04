@@ -8,7 +8,7 @@ Paste to ''Scripts > Application Scripts > Execute on application start'' On Set
 
 ![Screenshot of Pasted code.](/assets/images/20251204_02.JPG)
 
-### Playnite_OnStart_PWA.ps1
+### Playnite_OnStart_Webapp.ps1
 
 1. Check the game title and URL.
 2. Modify $GameTitle and $GameUrl to your game's title and URL.
