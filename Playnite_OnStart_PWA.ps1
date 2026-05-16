@@ -1,5 +1,5 @@
 # ----------------------------------------------------------
-# Script for tracking PWA games.
+# A tracking script for browser games installed as a PWA.
 # ----------------------------------------------------------
 
 # Path of a browser (Chromium)

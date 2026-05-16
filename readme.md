@@ -10,18 +10,18 @@ Paste to ''Scripts > Application Scripts > Execute on application start'' On Set
 
 ### Playnite_OnStart_PWA.ps1
 
-Using for PWA browser games.
+Using for browser games installed as a PWA.
 
-1. Find the game title and AppID from a desktop shortcut of PWA.
-2. Modify $GameTitle and $GameAppID to your game's title and AppID.
-3. Paste the modified code to your game's play action. Set the type to ''Script.''
+1. From the desktop shortcut of the PWA, check the game title and AppID.
+2. Replace $GameTitle and $GameAppID with the game title and AppID.
+3. Paste the modified code into the game's play action. Set the type to ''Script.''
 
 ### Playnite_OnStart_Webapp.ps1
 
-Using for non-PWA browser games.
+Using for (non-PWA) browser games.
 
 1. Check the game title and URL.
-2. Modify $GameTitle and $GameUrl to your game's title and URL.
-3. Paste the modified code to your game's play action. Set the type to ''Script.''
+2. Replace $GameTitle and $GameUrl with the game title and URL.
+3. Paste the modified code into the game's play action. Set the type to ''Script.''
 
 ![Screenshot of Pasted code.](/assets/images/20251204_01.JPG)
