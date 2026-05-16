@@ -16,6 +16,16 @@ Using for browser games installed as a PWA.
 2. Replace $GameTitle and $GameAppID with the game title and AppID.
 3. Paste the modified code into the game's play action. Set the type to ''Script.''
 
+### Playnite_OnStart_PWAwithURL.ps1
+
+Using for browser games hosted on a PWA site.
+(Example: a game posting site installed as a PWA.)
+
+1. Check the game title and URL.
+2. From the desktop shortcut of the PWA, check the site's AppID.
+3. Replace $GameTitle, $GameAppID, and $GameUrl with the game title, the site's AppID, and the game's URL.
+4. Paste the modified code into the game's play action. Set the type to ''Script.''
+
 ### Playnite_OnStart_Webapp.ps1
 
 Using for (non-PWA) browser games.
