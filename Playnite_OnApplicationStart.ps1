@@ -1,25 +1,31 @@
 # ----------------------------------------------------------
-# Get a list of windows with specific class name/window title by PowerShell.
+# Get a list of main windows to record playtime of browser games and more.
 #
-# PowerShell で、特定のクラス名/ウィンドウタイトルを持つウィンドウの一覧を取得します。
+# ブラウザゲームなどのプレイ時間を記録するために、メインウィンドウの一覧を取得します。
+# ----------------------------------------------------------
 #
-# Reference:
-#   https://stackoverflow.com/questions/16958051/get-chrome-browser-title-using-c-sharp
-#   https://raykeymas.com/posts/powershell/get-chrome-window (Japanese)
+# Reference / Source:
+#   Old method (ClassName and WindowTitle):
+#     https://stackoverflow.com/questions/16958051/get-chrome-browser-title-using-c-sharp
+#     https://raykeymas.com/posts/powershell/get-chrome-window (Japanese)
+#   Current method (Program Path and WindowTitle):
+#     https://qiita.com/Tadataka_Takahashi/items/91c42661ef9559ac5f86 (Japanese)
+#     https://note.com/kaito_mishima/n/n99cdce0b72f0 (Japanese)
+#
 # ----------------------------------------------------------
 Add-Type @"
 using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
+// Old method code
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
+// Old method code
 
-    // A class to get a list of windows with a specific class name.
-    //
-    // あるクラス名を持つウィンドウの一覧を取得するクラス
-    public class GetWindowsByClassName
+    public static class GetWindowsWin32
     {
         public delegate bool EnumWindowsDelegate(IntPtr hWnd, IntPtr lparam);
 
@@ -35,18 +41,24 @@ using System.Text;
 
         [DllImport("user32.dll", EntryPoint = "GetWindowTextLength", SetLastError = true)]
         internal static extern int GetWindowTextLength(IntPtr hwnd);
+    }
 
-        /// <summary>Find the windows matching the specified class name.</summary>
+// Old method code
+    // A class to get a list of windows with a specific class name.
+    //
+    // あるクラス名を持つウィンドウの一覧を取得するクラス
+    public class GetWindowsByClassName
+    {
 
         private GetWindowsByClassName(string className)
         {
             _className = className;
-            EnumWindows(callback, IntPtr.Zero);
+            GetWindowsWin32.EnumWindows(callback, IntPtr.Zero);
         }
 
         private bool callback(IntPtr hWnd, IntPtr lparam)
         {
-            if (GetClassName(hWnd, _apiResult, _apiResult.Capacity) != 0)
+            if (GetWindowsWin32.GetClassName(hWnd, _apiResult, _apiResult.Capacity) != 0)
             {
                 if (string.CompareOrdinal(_apiResult.ToString(), _className) == 0)
                 {
@@ -61,9 +73,9 @@ using System.Text;
         {
             foreach (var windowHandle in GetWindowHandles(className))
             {
-                int length = GetWindowTextLength(windowHandle);
+                int length = GetWindowsWin32.GetWindowTextLength(windowHandle);
                 StringBuilder sb = new StringBuilder(length + 1);
-                GetWindowText(windowHandle, sb, sb.Capacity);
+                GetWindowsWin32.GetWindowText(windowHandle, sb, sb.Capacity);
                 yield return new Tuple<string, IntPtr>(sb.ToString(), windowHandle);
             }
         }
@@ -94,4 +106,5 @@ using System.Text;
                     yield return new Tuple<string, IntPtr>(tuple.Item1, tuple.Item2);
         }
     }
+// Old method code
 "@
