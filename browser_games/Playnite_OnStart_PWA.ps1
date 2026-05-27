@@ -10,6 +10,16 @@ $GameTitle = "GeoGuessr"
 #
 # Progressive Web Apps (PWA) としてインストールされたブラウザゲームのプレイ時間を追跡します。
 # ----------------------------------------------------------
+#
+# Reference / Source:
+#   Old method (ClassName and WindowTitle):
+#     https://stackoverflow.com/questions/16958051/get-chrome-browser-title-using-c-sharp
+#     https://raykeymas.com/posts/powershell/get-chrome-window (Japanese)
+#   Current method (Program Name and WindowTitle):
+#     https://qiita.com/Tadataka_Takahashi/items/91c42661ef9559ac5f86 (Japanese)
+#     https://note.com/kaito_mishima/n/n99cdce0b72f0 (Japanese)
+#
+# ----------------------------------------------------------
 
 # Define Win32 APIs to get window information if it hasn't been defined yet.
 # (It's a debugging feature.)
@@ -68,7 +78,7 @@ function Get-Windows {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [Alias("BrowserPath")]
+        [Alias("ProcessPath")]
         [string]$Path,
         [Parameter()]
         [Alias("ProcessName")]
@@ -196,11 +206,14 @@ function Start-PWAProcess {
     # Open a PWA.
     Start-Process -FilePath $Path -ArgumentList "--app-id=`"${ArgumentList}`""
 
+    # Get filename without extension from full path.
+    $Name = [System.IO.Path]::GetFileNameWithoutExtension($Path)
+
     # Loop for waiting.
     while ($true)
     {
         # Get the window information to check if a game window is open.
-        $Browser = Get-Windows -Path $Path -WindowTitle $WindowTitle
+        $Browser = Get-Windows -Name $Name -WindowTitle $WindowTitle
 
         # if a game window is open.
         if (!$BrowserRunning -and ($Browser.Length -ne 0))

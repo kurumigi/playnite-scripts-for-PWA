@@ -8,7 +8,7 @@
 #   Old method (ClassName and WindowTitle):
 #     https://stackoverflow.com/questions/16958051/get-chrome-browser-title-using-c-sharp
 #     https://raykeymas.com/posts/powershell/get-chrome-window (Japanese)
-#   Current method (Program Path and WindowTitle):
+#   Current method (Program Name and WindowTitle):
 #     https://qiita.com/Tadataka_Takahashi/items/91c42661ef9559ac5f86 (Japanese)
 #     https://note.com/kaito_mishima/n/n99cdce0b72f0 (Japanese)
 #
