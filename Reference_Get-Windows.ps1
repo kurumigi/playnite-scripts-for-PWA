@@ -69,6 +69,19 @@ using System.Text;
 # メインウィンドウの一覧を取得します。
 function Get-Windows {
     [CmdletBinding()]
+    param (
+        [Parameter()]
+        [Alias("BrowserPath")]
+        [string]$Path,
+        [Parameter()]
+        [Alias("ProcessName")]
+        [string]$Name,
+        [Parameter()]
+        [string]$ClassName,
+        [Parameter()]
+        [Alias("Title")]
+        [string]$WindowTitle
+    )
 
     # Create a list to store windows informations.
     $MainWindowList = [System.Collections.Generic.List[object]]::new()
@@ -114,6 +127,30 @@ function Get-Windows {
 
         # Exclude windows without process information.
         if (-not $proc)
+        {
+            return $true
+        }
+
+        # If the $Path argument is provided, exclude where $Name isn't the window process path.
+        if ($Path -and ($Path -ne $proc.Path))
+        {
+            return $true
+        }
+
+        # If the $Name argument is provided, exclude where $Name isn't the window process name.
+        if ($Name -and ($Name -ne $proc.Name))
+        {
+            return $true
+        }
+
+        # If the $ClassName argument is provided, exclude where $ClassName isn't the window class name.
+        if ($ClassName -and ($ClassName -ne $class))
+        {
+            return $true
+        }
+
+        # If the $WindowTitle argument is provided, exclude where $WindowTitle isn't matched in the window title.
+        if ($WindowTitle -and (-not $title.Contains($WindowTitle)))
         {
             return $true
         }
