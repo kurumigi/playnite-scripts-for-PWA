@@ -51,7 +51,7 @@ function Start-PWAProcess {
         if (!$BrowserRunning -and ($Browser.Length -ne 0))
         {
             $BrowserRunning = $true
-            [Win32Functions]::ShowWindowAsync($Browser.Item2, 3) # SW_MAXIMIZE
+            [GetWindowsWin32]::ShowWindowAsync($Browser.Item2, 3) # SW_MAXIMIZE
         }
 
         # if game window closed
