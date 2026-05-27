@@ -1,4 +1,4 @@
-# Path of a browser. (Chromium)
+﻿# Path of a browser. (Chromium)
 $BrowserPath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 # AppID of a PWA game. AppID can be found from chrome://apps.
 $GameAppID = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -48,15 +48,15 @@ using System.Text;
         public static extern bool IsWindowVisible(IntPtr hWnd);
 
         // Retrieves the text of the specified window's title bar
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         // Retrieves the length of the specified window's title bar text
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetWindowTextLength(IntPtr hwnd);
 
         // Retrieves the name of the class to which the specified window belongs.
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         // Retrieves the identifier of the thread that created the specified window and the identifier of the process that created the window.
@@ -107,7 +107,7 @@ function Get-Windows {
         }
 
         # Get a length of a window title.
-        $len = [GetWindowsWin32]::GetWindowTextLengthA($hWnd)
+        $len = [GetWindowsWin32]::GetWindowTextLength($hWnd)
 
         # Exclude windows without window titles.
         if ($len -le 0)
@@ -117,12 +117,12 @@ function Get-Windows {
 
         # Get a window title.
         $sbTitle = [System.Text.StringBuilder]::new($len + 1)
-        [void][GetWindowsWin32]::GetWindowTextA($hWnd, $sbTitle, $sbTitle.Capacity)
+        [void][GetWindowsWin32]::GetWindowText($hWnd, $sbTitle, $sbTitle.Capacity)
         $title = $sbTitle.ToString()
 
         # Get a class name.
         $sbClass = [System.Text.StringBuilder]::new(256)
-        [void][GetWindowsWin32]::GetClassNameA($hWnd, $sbClass, $sbClass.Capacity)
+        [void][GetWindowsWin32]::GetClassName($hWnd, $sbClass, $sbClass.Capacity)
         $class = $sbClass.ToString()
 
         # Get a process id.

@@ -1,4 +1,4 @@
-# ----------------------------------------------------------
+﻿# ----------------------------------------------------------
 # Get a list of main windows to record playtime of browser games and more.
 #
 # ブラウザゲームなどのプレイ時間を記録するために、メインウィンドウの一覧を取得します。
@@ -45,16 +45,16 @@ using System.Security;
         public static extern bool IsWindowVisible(IntPtr hWnd);
 
         // Retrieves the text of the specified window's title bar
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetWindowTextA(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         // Retrieves the length of the specified window's title bar text
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetWindowTextLengthA(IntPtr hwnd);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetWindowTextLength(IntPtr hwnd);
 
         // Retrieves the name of the class to which the specified window belongs.
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetClassNameA(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         // Retrieves the identifier of the thread that created the specified window and the identifier of the process that created the window.
         [DllImport("user32.dll")]
@@ -81,7 +81,7 @@ using System.Security;
 
         private bool callback(IntPtr hWnd, IntPtr lparam)
         {
-            if (GetWindowsWin32.GetClassNameA(hWnd, _apiResult, _apiResult.Capacity) != 0)
+            if (GetWindowsWin32.GetClassName(hWnd, _apiResult, _apiResult.Capacity) != 0)
             {
                 if (string.CompareOrdinal(_apiResult.ToString(), _className) == 0)
                 {
@@ -96,9 +96,9 @@ using System.Security;
         {
             foreach (var windowHandle in GetWindowHandles(className))
             {
-                int length = GetWindowsWin32.GetWindowTextLengthA(windowHandle);
+                int length = GetWindowsWin32.GetWindowTextLength(windowHandle);
                 StringBuilder sb = new StringBuilder(length + 1);
-                GetWindowsWin32.GetWindowTextA(windowHandle, sb, sb.Capacity);
+                GetWindowsWin32.GetWindowText(windowHandle, sb, sb.Capacity);
                 yield return new Tuple<string, IntPtr>(sb.ToString(), windowHandle);
             }
         }
