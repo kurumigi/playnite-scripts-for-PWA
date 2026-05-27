@@ -13,6 +13,10 @@
 #     https://note.com/kaito_mishima/n/n99cdce0b72f0 (Japanese)
 #
 # ----------------------------------------------------------
+
+# Define Win32 APIs to get window information
+#
+# ウィンドウ情報を取得するために使用する Win32 API を定義します。
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
@@ -27,20 +31,39 @@ using System.Security;
 
     public static class GetWindowsWin32
     {
-        public delegate bool EnumWindowsDelegate(IntPtr hWnd, IntPtr lparam);
+        // A callback function used with the EnumWindows function.
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
+        // Enumerates all top-level windows on the screen
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public extern static bool EnumWindows(EnumWindowsDelegate lpEnumFunc, IntPtr lparam);
+        public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
-        [DllImport("User32", CharSet=CharSet.Auto, SetLastError=true)]
-        public static extern int GetWindowText(IntPtr windowHandle, StringBuilder stringBuilder, int nMaxCount);
+        // Determines the visibility state of the specified window.
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
 
-        [DllImport("user32.dll", EntryPoint = "GetWindowTextLength", SetLastError = true)]
-        internal static extern int GetWindowTextLength(IntPtr hwnd);
+        // Retrieves the text of the specified window's title bar
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowTextA(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        // Retrieves the length of the specified window's title bar text
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowTextLengthA(IntPtr hwnd);
+
+        // Retrieves the name of the class to which the specified window belongs.
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetClassNameA(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        // Retrieves the identifier of the thread that created the specified window and the identifier of the process that created the window.
+        [DllImport("user32.dll")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        // Sets the show state of a window without waiting for the operation to complete.
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
     }
 
 // Old method code
@@ -58,7 +81,7 @@ using System.Security;
 
         private bool callback(IntPtr hWnd, IntPtr lparam)
         {
-            if (GetWindowsWin32.GetClassName(hWnd, _apiResult, _apiResult.Capacity) != 0)
+            if (GetWindowsWin32.GetClassNameA(hWnd, _apiResult, _apiResult.Capacity) != 0)
             {
                 if (string.CompareOrdinal(_apiResult.ToString(), _className) == 0)
                 {
@@ -73,9 +96,9 @@ using System.Security;
         {
             foreach (var windowHandle in GetWindowHandles(className))
             {
-                int length = GetWindowsWin32.GetWindowTextLength(windowHandle);
+                int length = GetWindowsWin32.GetWindowTextLengthA(windowHandle);
                 StringBuilder sb = new StringBuilder(length + 1);
-                GetWindowsWin32.GetWindowText(windowHandle, sb, sb.Capacity);
+                GetWindowsWin32.GetWindowTextA(windowHandle, sb, sb.Capacity);
                 yield return new Tuple<string, IntPtr>(sb.ToString(), windowHandle);
             }
         }
