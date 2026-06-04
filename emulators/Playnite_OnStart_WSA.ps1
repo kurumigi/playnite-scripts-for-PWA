@@ -154,6 +154,10 @@ function Start-WSAProcess {
         # Get the window infomation to check if a game window is open.
         $WSA = Get-Windows -Name $Name -ClassName $PackageName
 
+        # Write the window information to the information stream.
+        $WSAInfo = "${WSA} = Get-Windows -Name ${Name} -ClassName ${PackageName}"
+        Write-Information $WSAInfo
+
         # if a game window is open.
         if (-not $WSARunning -and ($WSA.Length -ne 0))
         {

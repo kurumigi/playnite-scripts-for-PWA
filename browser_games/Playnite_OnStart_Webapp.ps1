@@ -165,6 +165,10 @@ function Start-WebProcess {
         # Get the window information to check if a game window is open.
         $Browser = Get-Windows -Name $Name -WindowTitle $WindowTitle
 
+        # Write the window information to the information stream.
+        $BrowserInfo = "${Browser} = Get-Windows -Name ${Name} -WindowTitle ${WindowTitle}"
+        Write-Information $BrowserInfo
+
         # if a game window is open.
         if (!$BrowserRunning -and ($Browser.Length -ne 0))
         {

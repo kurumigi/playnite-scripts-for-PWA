@@ -159,6 +159,10 @@ function Start-GPGPCProcess {
         # Get the window infomation to check if a game window is open.
         $GPGPC = Get-Windows -Name $VMName -WindowTitle $WindowTitle
 
+        # Write the window information to the information stream.
+        $GPGPCInfo = "${GPGPC} = Get-Windows -Name ${VMName} -WindowTitle ${WindowTitle}"
+        Write-Information $GPGPCInfo
+
         # if a game window is open.
         if (-not $GPGPCRunning -and ($GPGPC.Length -ne 0))
         {
